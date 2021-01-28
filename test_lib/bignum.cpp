@@ -30,6 +30,15 @@ bignum::bignum(std::string other_value)
 }
 
 
+bignum::bignum(long long other_value)
+{
+	_isNegative = false;
+	_value = std::to_string(other_value);
+	_size = _value.size();
+	_isNum = setIsNum();
+}
+
+
 bool bignum::isNum()
 {
 	return this->_isNum;
@@ -43,6 +52,17 @@ std::string bignum::getValue()
 		_value.insert(0, "-");
 	return _value;
 }
+
+
+long long bignum::getValueInt()//Возвращает long (исправить)
+{
+	std::string temp_value = this->_value;
+	long long int_value = atoi(temp_value.c_str());
+	if (this->_isNegative)
+		int_value *= -1;
+	return int_value;
+}
+
 
 
 bool bignum::setIsNum()
@@ -353,7 +373,7 @@ bignum bignum::operator +(const bignum& other)
 		else
 			Negative = true;
 	}
-	else if(!(this->_isNegative) && (other._isNegative))
+	else if (!(this->_isNegative) && (other._isNegative))
 	{
 		num3 = minus(other);
 		if (comparison(this->_value, other._value))
@@ -378,12 +398,12 @@ bignum bignum::operator -(const bignum& other)
 		my_exeption(1012, other);
 	bignum num3;
 	bool Negative = false;
-	if (!(this->_isNegative) && (other._isNegative)) 
+	if (!(this->_isNegative) && (other._isNegative))
 	{
 		num3 = sum(this->_value, other._value);
 		Negative = false;
 	}
-	else if ((this->_isNegative) && !(other._isNegative)) 
+	else if ((this->_isNegative) && !(other._isNegative))
 	{
 		num3 = sum(this->_value, other._value);
 		Negative = true;
@@ -396,7 +416,7 @@ bignum bignum::operator -(const bignum& other)
 		else
 			Negative = true;
 	}
-	else if((!(this->_isNegative) && !(other._isNegative)))
+	else if ((!(this->_isNegative) && !(other._isNegative)))
 	{
 		num3 = minus(other);
 		if (comparison(this->_value, other._value))
@@ -552,6 +572,19 @@ bool const bignum::operator >=(const bignum& other)
 	else
 		return !comparison(other);
 	return !comparison(other);
+}
+
+
+bignum& bignum::operator+=(const bignum& other)
+{
+	*this = *this + other;
+	return *this;
+}
+
+bignum& bignum::operator-=(const bignum& other)
+{
+	*this = *this - other;
+	return *this;
 }
 
 

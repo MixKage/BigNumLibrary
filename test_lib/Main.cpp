@@ -54,7 +54,8 @@ int main()
 		else
 			cout << "NO";
 	}*/
-	while (true) {
+
+	/*while (true) {
 		bignum num1;
 		bignum num2;
 		char op;
@@ -97,11 +98,14 @@ int main()
 		{
 			break;
 		}
+
 		/*try { auto num3 = num1 - num2; cout << "Answer: " << num1 << " - " << num2 << " = " << num3 << endl; }
 		catch (const exception& e)
 		{
 			cerr << e.what() << endl;
 		}*/
-	}
+		//	}
+	bignum b = -5000000000000000000;
+	cout << b.getValueInt();
 	return 0;
 }

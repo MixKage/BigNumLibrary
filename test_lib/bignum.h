@@ -4,7 +4,7 @@
 #include <iostream>
 #include <algorithm>
 
-//bignum by NNC. Version: 0.1.3
+//bignum by NNC. Version: 0.1.4
 //ExitCode (1001-1012) = BigNumLib: The object is not a number!
 
 class bignum {
@@ -31,8 +31,10 @@ public:
 	bignum();
 	bignum(const char* other_value);
 	bignum(std::string other_value);
+	bignum(long long int other_value);
 	bool isNum();
 	std::string getValue();
+	long long getValueInt();
 	bignum& operator = (const bignum& other);
 	bignum operator + (const bignum& other);
 	bignum operator - (const bignum& other);
@@ -42,6 +44,8 @@ public:
 	bool const operator > (const bignum& other);
 	bool const operator <= (const bignum& other);
 	bool const operator >=(const bignum& other);
+	bignum& operator += (const bignum& other);
+	bignum& operator -= (const bignum& other);
 	bignum& operator ++();
 	bignum& operator --();
 	bignum& operator ++(int pref);
