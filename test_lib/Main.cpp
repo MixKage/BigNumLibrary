@@ -105,7 +105,16 @@ int main()
 			cerr << e.what() << endl;
 		}*/
 		//	}
-	bignum b = -5000000000000000000;
+	bignum a = 10;
+	cout << a.getValueInt();
+	bignum b = 9223372036854775807;
 	cout << b.getValueInt();
+
+	for(long long int i = 9223372036854775807; i>0 ;i--)
+	{
+		a = std::to_string(i);
+		a.getValueInt();
+		cout << "i: " << i << " - a: " << a << endl;
+	}
 	return 0;
 }

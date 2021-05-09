@@ -1,6 +1,4 @@
-//.cpp (Исполняющий файл)
 #include "bignum.h"
-#define ULLI unsigned long long int
 
 
 bignum::bignum()
@@ -54,13 +52,20 @@ std::string bignum::getValue()
 }
 
 
-long long bignum::getValueInt()//Возвращает long (исправить)
+long long bignum::getValueInt()
 {
-	std::string temp_value = this->_value;
-	long long int_value = atoi(temp_value.c_str());
+	if ((*this > "9223372036854775807")||(*this<"-9223372036854775807"))
+		my_exeption(1013);
+	long long int answer{};
+	for (size_t i = 0; i < this->_size; i++) 
+	{
+		answer += this->_value[i] - '0';
+		if (i != this->_size - 1)
+			answer *= 10;
+	}
 	if (this->_isNegative)
-		int_value *= -1;
-	return int_value;
+		answer *= -1;
+	return answer;
 }
 
 
@@ -73,7 +78,7 @@ CHECK_AGAIN:
 		return false;
 	if ((this->_size == 1) && (this->_value == "0") && (this->_isNegative == true))
 		refact_value();
-	for (ULLI i = 0; i < this->_size; i++)
+	for (size_t i = 0; i < this->_size; i++)
 	{
 		temp_num = this->_value[i] - '0';
 		if ((i == 0) && (temp_num == 0) && (this->_size > 1))
@@ -97,7 +102,7 @@ CHECK_AGAIN:
 }
 
 
-void bignum::refact_value() //delete -
+void bignum::refact_value()
 {
 	if ((this->_size == 1) && (this->_value == "0") && (this->_isNegative == true))
 	{
@@ -105,7 +110,7 @@ void bignum::refact_value() //delete -
 		return;
 	}
 	std::string temp{};
-	for (ULLI i = 1; i < _size; i++)
+	for (size_t i = 1; i < _size; i++)
 		temp.push_back(_value[i]);
 	_value = temp;
 	_size = _size - 1;
@@ -121,9 +126,9 @@ void bignum::swap(std::string* str1, std::string* str2)
 }
 
 
-void bignum::swap(ULLI* num1, ULLI* num2)
+void bignum::swap(size_t* num1, size_t* num2)
 {
-	ULLI temp{};
+	size_t temp{};
 	temp = *num1;
 	*num1 = *num2;
 	*num2 = temp;
@@ -152,7 +157,7 @@ bool bignum::comparison(std::string str1, std::string str2)
 			return true;
 		}
 	}
-	for (ULLI i = 0; i < this->_size; i++)
+	for (size_t i = 0; i < this->_size; i++)
 	{
 		if (!(str1[i] == str2[i]))
 		{
@@ -184,7 +189,7 @@ bool bignum::comparison(const bignum& other)
 		negative_2 = -1;
 		negative_on = true;
 	}
-	for (ULLI i = 0; i < this->_size; i++)
+	for (size_t i = 0; i < this->_size; i++)
 	{
 		if (!(this->_value[i] == other._value[i]) || (negative_on))
 		{
@@ -203,8 +208,8 @@ bool bignum::comparison(const bignum& other)
 
 std::string bignum::sum(std::string str1, std::string str2)
 {
-	ULLI lenght1 = str1.length();
-	ULLI lenght2 = str2.length();
+	size_t lenght1 = str1.length();
+	size_t lenght2 = str2.length();
 	int temp = 0;
 	std::string answer{};
 	if (lenght1 > lenght2)
@@ -217,13 +222,13 @@ std::string bignum::sum(std::string str1, std::string str2)
 	std::reverse(str2.begin(), str2.end());
 
 	short int residue = 0;
-	for (ULLI i = 0; i < lenght1; i++)
+	for (size_t i = 0; i < lenght1; i++)
 	{
 		short int sum = ((str1[i] - '0') + (str2[i] - '0') + residue);
 		answer.push_back(sum % 10 + '0');
 		residue = sum / 10;
 	}
-	for (ULLI i = lenght1; i < lenght2; i++)
+	for (size_t i = lenght1; i < lenght2; i++)
 	{
 		short int sum = ((str2[i] - '0') + residue);
 		answer.push_back(sum % 10 + '0');
@@ -240,8 +245,8 @@ std::string bignum::sum(std::string str1, std::string str2)
 
 std::string bignum::minus(const bignum& other)
 {
-	ULLI lenght1 = this->_size;
-	ULLI lenght2 = other._size;
+	size_t lenght1 = this->_size;
+	size_t lenght2 = other._size;
 	std::string str1 = this->_value;
 	std::string str2 = other._value;
 	bool Neg1 = this->_isNegative;
@@ -263,13 +268,13 @@ std::string bignum::minus(const bignum& other)
 	int temp1 = 0;
 	int temp2 = 0;
 
-	for (ULLI i = 0; i < lenght2; i++)
+	for (size_t i = 0; i < lenght2; i++)
 	{
 		temp1 = str1[i] - '0';
 		temp2 = str2[i] - '0';
 		if (temp1 < temp2)
 		{
-			ULLI l = i + 1;
+			size_t l = i + 1;
 			while (str1[l] == 0)
 			{
 				str1[l] = '9';
@@ -281,7 +286,7 @@ std::string bignum::minus(const bignum& other)
 		short int sum = temp1 - temp2;
 		answer.push_back(sum + '0');
 	}
-	for (ULLI i = lenght2; i < lenght1; i++)
+	for (size_t i = lenght2; i < lenght1; i++)
 	{
 		short int sum = str1[i] - '0';
 		answer.push_back(sum + '0');
@@ -296,7 +301,7 @@ void bignum::sumOne()
 	std::reverse(this->_value.begin(), this->_value.end());
 	short int residue = 0;
 	short int sum = 0;
-	for (ULLI i = 0; i < this->_size; i++)
+	for (size_t i = 0; i < this->_size; i++)
 	{
 		if (i == 0)
 		{
@@ -325,7 +330,7 @@ void bignum::minusOne()
 	std::reverse(this->_value.begin(), this->_value.end());
 	short int residue = 0;
 	short int sum = 0;
-	for (ULLI i = 0; i < this->_size; i++)
+	for (size_t i = 0; i < this->_size; i++)
 	{
 		if (i == 0)
 		{
@@ -610,7 +615,8 @@ std::istream& operator >>(std::istream& is, bignum& obj)
 
 void const bignum::my_exeption(unsigned exp)
 {
-	std::string _operator = {};
+	std::string _operator{};
+	std::string _error{};
 	if (exp == 1001)
 		_operator = "<";
 	else if (exp == 1003)
@@ -623,7 +629,10 @@ void const bignum::my_exeption(unsigned exp)
 		_operator = "++";
 	else if (exp == 1010)
 		_operator = "--";
-	auto _error = "BigNumLib: The object is not a number! The operator gave the error '" + _operator + "'\n";
+	else if (exp == 1013)
+		_error = "The number has exceeded the limit long long int. No conversion possible!\n";
+	if(_error=="")
+		_error = "BigNumLib: The object is not a number! The operator gave the error '" + _operator + "'\n";
 	if (this->_isNegative)
 		_error += "\nVariable properties:\nValue: -" + this->_value;
 	else
