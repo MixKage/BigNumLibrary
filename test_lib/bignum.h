@@ -3,8 +3,9 @@
 #include <iostream>
 #include <algorithm>
 
-//bignum by NNC. Version: 0.1.5
-//ExitCode (1001-1013) = BigNumLib: The object is not a number!
+//bignum by NNC. Version: 0.1.6
+//ExitCode (1001-1012) = BigNumLib: The object is not a number!
+//ExitCode (1013) = BigNumLib: The number has exceeded the limit long long int. No conversion possible!
 
 //By default, it is initialized to 0. It can accept either a string or long long int.
 class bignum {

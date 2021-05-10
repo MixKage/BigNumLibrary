@@ -54,10 +54,10 @@ std::string bignum::getValue()
 
 long long bignum::getValueInt()
 {
-	if ((*this > "9223372036854775807")||(*this<"-9223372036854775807"))
+	if ((*this > "9223372036854775807") || (*this < "-9223372036854775807"))
 		my_exeption(1013);
 	long long int answer{};
-	for (size_t i = 0; i < this->_size; i++) 
+	for (size_t i = 0; i < this->_size; i++)
 	{
 		answer += this->_value[i] - '0';
 		if (i != this->_size - 1)
@@ -518,13 +518,20 @@ bool const bignum::operator <(const bignum& other)
 		my_exeption(1001);
 	else if (!other._isNum)
 		my_exeption(1002, other);
-	else if ((this->_size > other._size) || ((this->_value == other._value) && (this->_isNegative == other._isNegative))
-		)
-		return false;
-	else if (this->_size < other._size)
+	else if (this->_isNegative && !(other._isNegative))
 		return true;
-	else
-		return comparison(other);
+	else if (!(this->_isNegative) && other._isNegative)
+		return false;
+	else if ((this->_size > other._size) && !(this->_isNegative) && !(other._isNegative))
+		return false;
+	else if ((this->_size < other._size) && !(this->_isNegative) && !(other._isNegative))
+		return true;
+	else if ((this->_size > other._size) && this->_isNegative && other._isNegative)
+		return true;
+	else if ((this->_size < other._size) && this->_isNegative && other._isNegative)
+		return false;
+	else if ((this->_value == other._value) && (this->_isNegative == other._isNegative))
+		return false;
 	return comparison(other);
 }
 
@@ -535,13 +542,20 @@ bool const bignum::operator >(const bignum& other)
 		my_exeption(1003);
 	else if (!other._isNum)
 		my_exeption(1004, other);
-	else if (this->_size > other._size)
-		return true;
-	else if ((this->_size < other._size) || ((this->_value == other._value) && (this->_isNegative == other._isNegative))
-		)
+	else if (this->_isNegative && !(other._isNegative))
 		return false;
-	else
-		return !comparison(other);
+	else if (!(this->_isNegative) && other._isNegative)
+		return true;
+	else if ((this->_size > other._size) && !(this->_isNegative) && !(other._isNegative))
+		return true;
+	else if ((this->_size < other._size) && !(this->_isNegative) && !(other._isNegative))
+		return false;
+	else if ((this->_size > other._size) && this->_isNegative && other._isNegative)
+		return false;
+	else if ((this->_size < other._size) && this->_isNegative && other._isNegative)
+		return true;
+	else if ((this->_value == other._value) && (this->_isNegative == other._isNegative))
+		return false;
 	return !comparison(other);
 }
 
@@ -552,13 +566,20 @@ bool const bignum::operator <=(const bignum& other)
 		my_exeption(1005);
 	else if (!other._isNum)
 		my_exeption(1006, other);
-	else if (this->_size > other._size)
-		return false;
-	else if ((this->_size < other._size) || ((this->_value == other._value) && (this->_isNegative == other._isNegative))
-		)
+	else if (this->_isNegative && !(other._isNegative))
 		return true;
-	else
-		return comparison(other);
+	else if (!(this->_isNegative) && other._isNegative)
+		return false;
+	else if ((this->_size > other._size) && !(this->_isNegative) && !(other._isNegative))
+		return false;
+	else if ((this->_size < other._size) && !(this->_isNegative) && !(other._isNegative))
+		return true;
+	else if ((this->_size > other._size) && this->_isNegative && other._isNegative)
+		return true;
+	else if ((this->_size < other._size) && this->_isNegative && other._isNegative)
+		return false;
+	else if ((this->_value == other._value) && (this->_isNegative == other._isNegative))
+		return true;
 	return comparison(other);
 }
 
@@ -569,13 +590,20 @@ bool const bignum::operator >=(const bignum& other)
 		my_exeption(1007);
 	else if (!other._isNum)
 		my_exeption(1008, other);
-	else if ((this->_size > other._size) || ((this->_value == other._value) && (this->_isNegative == other._isNegative))
-		)
-		return true;
-	else if (this->_size < other._size)
+	else if (this->_isNegative && !(other._isNegative))
 		return false;
-	else
-		return !comparison(other);
+	else if (!(this->_isNegative) && other._isNegative)
+		return true;
+	else if ((this->_size > other._size) && !(this->_isNegative) && !(other._isNegative))
+		return true;
+	else if ((this->_size < other._size) && !(this->_isNegative) && !(other._isNegative))
+		return false;
+	else if ((this->_size > other._size) && this->_isNegative && other._isNegative)
+		return false;
+	else if ((this->_size < other._size) && this->_isNegative && other._isNegative)
+		return true;
+	else if ((this->_value == other._value) && (this->_isNegative == other._isNegative))
+		return true;
 	return !comparison(other);
 }
 
@@ -631,7 +659,7 @@ void const bignum::my_exeption(unsigned exp)
 		_operator = "--";
 	else if (exp == 1013)
 		_error = "The number has exceeded the limit long long int. No conversion possible!\n";
-	if(_error=="")
+	if (_error == "")
 		_error = "BigNumLib: The object is not a number! The operator gave the error '" + _operator + "'\n";
 	if (this->_isNegative)
 		_error += "\nVariable properties:\nValue: -" + this->_value;

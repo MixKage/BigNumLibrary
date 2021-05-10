@@ -3,7 +3,7 @@
 #include "bignum.h"
 //#include "C:\Users\user\Documents\Программирование\C++\Library\BigNumLib\include\src\BigNumLib.h"
 using namespace std;
-
+void sravn(bignum* num1, bignum* num2);
 int main()
 {
 	//Example 1
@@ -105,7 +105,7 @@ int main()
 			cerr << e.what() << endl;
 		}*/
 		//	}
-	bignum a = 10;
+	/*bignum a = 10;
 	cout << a.getValueInt();
 	bignum b = 9223372036854775807;
 	cout << b.getValueInt();
@@ -115,6 +115,38 @@ int main()
 		a = std::to_string(i);
 		a.getValueInt();
 		cout << "i: " << i << " - a: " << a << endl;
-	}
+	}*/
+
+	bignum num1;
+	bignum num2;
+	num1 = 23;
+	num2 = 9;
+	sravn(&num1, &num2);
+	num1 = -23;
+	num2 = -9;
+	sravn(&num1, &num2);
+	num1 = 23;
+	num2 = -9;
+	sravn(&num1, &num2);
+	num1 = -23;
+	num2 = 9;
+	sravn(&num1, &num2);
+	num1 = -23;
+	num2 = -23;
+	sravn(&num1, &num2);
+	num1 = -23;
+	num2 = -24;
+	sravn(&num1, &num2);
+	num1 = -23;
+	num2 = -22;
+	sravn(&num1, &num2);
 	return 0;
+}
+
+void sravn(bignum* num1, bignum* num2)
+{
+	if (*num1 < *num2)
+		cout << *num1 << " < " << *num2 << " = true" << endl;
+	else
+		cout << *num1 << " < " << *num2 << " = false" << endl;
 }
