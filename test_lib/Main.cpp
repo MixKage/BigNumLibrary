@@ -6,6 +6,8 @@ using namespace std;
 void sravn(bignum* num1, bignum* num2);
 int main()
 {
+	bignum a = -23;
+	a + 2;
 	//Example 1
 	/*bignum a;
 	bignum c = "43";
@@ -117,29 +119,29 @@ int main()
 		cout << "i: " << i << " - a: " << a << endl;
 	}*/
 
-	bignum num1;
-	bignum num2;
-	num1 = 23;
-	num2 = 9;
-	sravn(&num1, &num2);
-	num1 = -23;
-	num2 = -9;
-	sravn(&num1, &num2);
-	num1 = 23;
-	num2 = -9;
-	sravn(&num1, &num2);
-	num1 = -23;
-	num2 = 9;
-	sravn(&num1, &num2);
-	num1 = -23;
-	num2 = -23;
-	sravn(&num1, &num2);
-	num1 = -23;
-	num2 = -24;
-	sravn(&num1, &num2);
-	num1 = -23;
-	num2 = -22;
-	sravn(&num1, &num2);
+	//bignum num1;
+	//bignum num2;
+	//num1 = 23;
+	//num2 = 9;
+	//sravn(&num1, &num2);
+	//num1 = -23;
+	//num2 = -9;
+	//sravn(&num1, &num2);
+	//num1 = 23;
+	//num2 = -9;
+	//sravn(&num1, &num2);
+	//num1 = -23;
+	//num2 = 9;
+	//sravn(&num1, &num2);
+	//num1 = -23;
+	//num2 = -23;
+	//sravn(&num1, &num2);
+	//num1 = -23;
+	//num2 = -24;
+	//sravn(&num1, &num2);
+	//num1 = -23;
+	//num2 = -22;
+	//sravn(&num1, &num2);
 	return 0;
 }
 

@@ -2,8 +2,9 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <limits>
 
-//bignum by NNC. Version: 0.1.6
+//bignum by NNC. Version: 0.1.7
 //ExitCode (1001-1012) = BigNumLib: The object is not a number!
 //ExitCode (1013) = BigNumLib: The number has exceeded the limit long long int. No conversion possible!
 
@@ -12,18 +13,14 @@ class bignum {
 private:
 	std::string _value;
 	size_t _size;
-	bool _isNum;
 	bool _isNegative;
 
 	void swap(std::string* str1, std::string* str2);
 	void swap(size_t* num1, size_t* num2);
 	void swap(bool* boo1, bool* boo2);
-	//Checks if a number @return bool
-	bool setIsNum();
 	bool comparison(std::string str1, std::string str2);
 	bool comparison(const bignum& other);
-	//Delete "-"
-	void refact_value();
+	void parsStringToBigNumParams();
 	void const my_exeption(unsigned int exp);
 	void const my_exeption(unsigned int exp, const bignum& other);
 	std::string sum(std::string str1, std::string str2);
@@ -36,8 +33,6 @@ public:
 	bignum(const char* other_value);
 	bignum(std::string other_value);
 	bignum(long long int other_value);
-	//Checks if a number @return bool
-	bool isNum();
 	//@return string
 	std::string getValue();
 	//@return long long int

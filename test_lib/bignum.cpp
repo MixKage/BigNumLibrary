@@ -6,40 +6,28 @@ bignum::bignum()
 	_value = "0";
 	_size = 1;
 	_isNegative = false;
-	_isNum = true;
+}
+
+
+bignum::bignum(long long other_value)
+{
+	_isNegative = other_value < 0 ? true : false;
+	_value = _isNegative ? std::to_string(other_value).erase(0, 1) : std::to_string(other_value);
+	_size = _value.size();
 }
 
 
 bignum::bignum(const char* other_value)
 {
 	_value = other_value;
-	_size = _value.size();
-	_isNegative = false;
-	_isNum = setIsNum();
+	parsStringToBigNumParams();
 }
 
 
 bignum::bignum(std::string other_value)
 {
 	_value = other_value;
-	_size = _value.size();
-	_isNegative = false;
-	_isNum = setIsNum();
-}
-
-
-bignum::bignum(long long other_value)
-{
-	_isNegative = false;
-	_value = std::to_string(other_value);
-	_size = _value.size();
-	_isNum = setIsNum();
-}
-
-
-bool bignum::isNum()
-{
-	return this->_isNum;
+	parsStringToBigNumParams();
 }
 
 
@@ -54,7 +42,7 @@ std::string bignum::getValue()
 
 long long bignum::getValueInt()
 {
-	if ((*this > "9223372036854775807") || (*this < "-9223372036854775807"))
+	if ((*this > LLONG_MAX) || (*this < LLONG_MIN))
 		my_exeption(1013);
 	long long int answer{};
 	for (size_t i = 0; i < this->_size; i++)
@@ -69,51 +57,17 @@ long long bignum::getValueInt()
 }
 
 
-
-bool bignum::setIsNum()
+void bignum::parsStringToBigNumParams()
 {
-	short temp_num = 0;
-CHECK_AGAIN:
-	if (this->_size == 0)
-		return false;
-	if ((this->_size == 1) && (this->_value == "0") && (this->_isNegative == true))
-		refact_value();
-	for (size_t i = 0; i < this->_size; i++)
-	{
-		temp_num = this->_value[i] - '0';
-		if ((i == 0) && (temp_num == 0) && (this->_size > 1))
-		{
-			refact_value();
-			goto CHECK_AGAIN;
-		}
-		if ((temp_num < 0) || (temp_num > 9))
-		{
-			if ((i == 0) && (temp_num == -3))
-			{
-				this->_isNegative = true;
-				refact_value();
-				goto CHECK_AGAIN;
-			}
-			else
-				return false;
-		}
+	if (_value[0] == '-') {
+		_value = _value.erase(0, 1);
+		_isNegative = true;
 	}
-	return true;
-}
-
-
-void bignum::refact_value()
-{
-	if ((this->_size == 1) && (this->_value == "0") && (this->_isNegative == true))
-	{
-		this->_isNegative = false;
-		return;
-	}
-	std::string temp{};
-	for (size_t i = 1; i < _size; i++)
-		temp.push_back(_value[i]);
-	_value = temp;
-	_size = _size - 1;
+	else
+		_isNegative = false;
+	if (_value.find_first_not_of("0123456789") != std::string::npos)
+		throw std::runtime_error(_value + " it's not a number!");
+	_size = _value.size();
 }
 
 
@@ -358,16 +312,13 @@ bignum& bignum::operator =(const bignum& other)
 {
 	this->_value = other._value;
 	this->_size = other._size;
-	this->_isNum = other._isNum;
 	this->_isNegative = other._isNegative;
 	return *this;
 }
 
-
+//TODO: ÔÓ‚ÂËÚ¸ ÙÛÌÍˆË˛
 bignum bignum::operator +(const bignum& other)
 {
-	if (!(this->_isNum) || !(other._isNum))
-		my_exeption(1011, other);
 	bignum num3;
 	bool Negative = false;
 	if ((this->_isNegative) && !(other._isNegative))
@@ -392,15 +343,13 @@ bignum bignum::operator +(const bignum& other)
 		Negative = true;
 	if (Negative == true)
 		num3._isNegative = true;
-	num3.setIsNum();
+	//num3.setIsNum(); ¬Œ«ÃŒ∆Õ€ Œÿ»¡ » »«-«¿ ”ƒ¿À≈Õ»ﬂ setIsNum() ÔÓ‚ÂÍ‡ Ì‡ ˜ËÒÎÓ
 	return num3;
 }
 
-
+//TODO: ÔÓ‚ÂËÚ¸ ÙÛÌÍˆË˛
 bignum bignum::operator -(const bignum& other)
 {
-	if (!(this->_isNum) || !(other._isNum))
-		my_exeption(1012, other);
 	bignum num3;
 	bool Negative = false;
 	if (!(this->_isNegative) && (other._isNegative))
@@ -431,7 +380,7 @@ bignum bignum::operator -(const bignum& other)
 	}
 	if (Negative == true)
 		num3._isNegative = true;
-	num3.setIsNum();
+	//num3.setIsNum(); ¬Œ«ÃŒ∆Õ€ Œÿ»¡ » »«-«¿ ”ƒ¿À≈Õ»ﬂ setIsNum() ÔÓ‚ÂÍ‡ Ì‡ ˜ËÒÎÓ
 	return num3;
 }
 
@@ -439,8 +388,6 @@ bignum bignum::operator -(const bignum& other)
 
 bignum& bignum::operator++()
 {
-	if (!this->_isNum)
-		my_exeption(1009);
 	if (this->_isNegative)
 		minusOne();
 	else
@@ -452,8 +399,6 @@ bignum& bignum::operator++()
 
 bignum& bignum::operator--()
 {
-	if (!this->_isNum)
-		my_exeption(1010);
 	if (this->_isNegative)
 		sumOne();
 	else
@@ -465,8 +410,6 @@ bignum& bignum::operator--()
 
 bignum& bignum::operator++(int pref)
 {
-	if (!this->_isNum)
-		my_exeption(1009);
 	if (this->_isNegative)
 		minusOne();
 	else
@@ -478,8 +421,6 @@ bignum& bignum::operator++(int pref)
 
 bignum& bignum::operator--(int pref)
 {
-	if (!this->_isNum)
-		my_exeption(1010);
 	if (this->_isNegative)
 		sumOne();
 	else
@@ -491,7 +432,7 @@ bignum& bignum::operator--(int pref)
 
 bool const bignum::operator ==(const bignum& other)
 {
-	if ((this->_isNum != other._isNum) || (this->_isNegative != other._isNegative)
+	if ((this->_isNegative != other._isNegative)
 		|| (this->_size != other._size) || (this->_value != other._value))
 	{
 		return false;
@@ -502,7 +443,7 @@ bool const bignum::operator ==(const bignum& other)
 
 bool const bignum::operator !=(const bignum& other)
 {
-	if ((this->_size != other._size) || (this->_isNum != other._isNum) || (this->_isNegative != other._isNegative))
+	if ((this->_size != other._size) || (this->_isNegative != other._isNegative))
 		return true;
 	if ((this->_value == other._value))
 	{
@@ -514,11 +455,7 @@ bool const bignum::operator !=(const bignum& other)
 
 bool const bignum::operator <(const bignum& other)
 {
-	if (!this->_isNum)
-		my_exeption(1001);
-	else if (!other._isNum)
-		my_exeption(1002, other);
-	else if (this->_isNegative && !(other._isNegative))
+	if (this->_isNegative && !(other._isNegative))
 		return true;
 	else if (!(this->_isNegative) && other._isNegative)
 		return false;
@@ -538,11 +475,7 @@ bool const bignum::operator <(const bignum& other)
 
 bool const bignum::operator >(const bignum& other)
 {
-	if (!this->_isNum)
-		my_exeption(1003);
-	else if (!other._isNum)
-		my_exeption(1004, other);
-	else if (this->_isNegative && !(other._isNegative))
+	if (this->_isNegative && !(other._isNegative))
 		return false;
 	else if (!(this->_isNegative) && other._isNegative)
 		return true;
@@ -562,11 +495,7 @@ bool const bignum::operator >(const bignum& other)
 
 bool const bignum::operator <=(const bignum& other)
 {
-	if (!this->_isNum)
-		my_exeption(1005);
-	else if (!other._isNum)
-		my_exeption(1006, other);
-	else if (this->_isNegative && !(other._isNegative))
+	if (this->_isNegative && !(other._isNegative))
 		return true;
 	else if (!(this->_isNegative) && other._isNegative)
 		return false;
@@ -586,11 +515,7 @@ bool const bignum::operator <=(const bignum& other)
 
 bool const bignum::operator >=(const bignum& other)
 {
-	if (!this->_isNum)
-		my_exeption(1007);
-	else if (!other._isNum)
-		my_exeption(1008, other);
-	else if (this->_isNegative && !(other._isNegative))
+	if (this->_isNegative && !(other._isNegative))
 		return false;
 	else if (!(this->_isNegative) && other._isNegative)
 		return true;
@@ -630,13 +555,13 @@ std::ostream& operator <<(std::ostream& os, const bignum& obj)
 	return os;
 }
 
-
+//TODO: ÔÓ‚ÂËÚ¸ ˝ÚÛ ÙÛÍÌˆË˛.
 std::istream& operator >>(std::istream& is, bignum& obj)
 {
 	is >> obj._value;
 	obj._size = obj._value.size();
 	obj._isNegative = false;
-	obj._isNum = obj.setIsNum();
+	//obj._isNum = obj.setIsNum(); ¬Œ«ÃŒ∆Õ€ Œÿ»¡ » »«-«¿ ”ƒ¿À≈Õ»ﬂ ‘”Õ ÷»» setIsNum (ÔÓ‚ÂÍ‡ Ì‡ ˜ËÒÎÓ)
 	return is;
 }
 
@@ -645,20 +570,32 @@ void const bignum::my_exeption(unsigned exp)
 {
 	std::string _operator{};
 	std::string _error{};
-	if (exp == 1001)
+	switch (exp)
+	{
+	case(1001):
 		_operator = "<";
-	else if (exp == 1003)
+		break;
+	case(1003):
 		_operator = ">";
-	else if (exp == 1005)
+		break;
+	case(1005):
 		_operator = "<=";
-	else if (exp == 1007)
+		break;
+	case(1007):
 		_operator = ">=";
-	else if (exp == 1009)
+		break;
+	case(1009):
 		_operator = "++";
-	else if (exp == 1010)
+		break;
+	case(1010):
 		_operator = "--";
-	else if (exp == 1013)
+		break;
+	case(1013):
 		_error = "The number has exceeded the limit long long int. No conversion possible!\n";
+		break;
+	default:
+		break;
+	}
 	if (_error == "")
 		_error = "BigNumLib: The object is not a number! The operator gave the error '" + _operator + "'\n";
 	if (this->_isNegative)
@@ -666,7 +603,6 @@ void const bignum::my_exeption(unsigned exp)
 	else
 		_error += "\nVariable properties:\nValue: " + this->_value;
 	_error += "\nSize: " + std::to_string(this->_size);
-	_error += "\n_isNum: " + std::to_string(this->_isNum);
 	throw std::runtime_error(_error);
 }
 
@@ -675,21 +611,30 @@ void const bignum::my_exeption(unsigned exp, const bignum& other)
 {
 	std::string _operator = {};
 	bool TwoVariables = false;
-	if (exp == 1002)
+	switch (exp)
+	{
+	case(1002):
 		_operator = "<";
-	else if (exp == 1004)
+		break;
+	case(1004):
 		_operator = ">";
-	else if (exp == 1006)
+		break;
+	case(1006):
 		_operator = "<=";
-	else if (exp == 1008)
+		break;
+	case(1008):
 		_operator = ">=";
-	else if (exp == 1011) {
+		break;
+	case(1011):
 		_operator = "+";
 		TwoVariables = true;
-	}
-	else if (exp == 1012) {
+		break;
+	case(1012):
 		_operator = "-";
 		TwoVariables = true;
+		break;
+	default:
+		break;
 	}
 	auto _error = "BigNumLib: The object is not a number! The operator gave the error '" + _operator + "'\n";
 
@@ -700,7 +645,6 @@ void const bignum::my_exeption(unsigned exp, const bignum& other)
 		else
 			_error += "\nVariable properties:\nValue: " + this->_value;
 		_error += "\nSize: " + std::to_string(this->_size);
-		_error += "\n_isNum: " + std::to_string(this->_isNum);
 		_error += "\n";
 	}
 	if (other._isNegative)
@@ -708,6 +652,5 @@ void const bignum::my_exeption(unsigned exp, const bignum& other)
 	else
 		_error += "\nVariable properties:\nValue: " + other._value;
 	_error += "\nSize: " + std::to_string(other._size);
-	_error += "\n_isNum: " + std::to_string(other._isNum);
 	throw std::runtime_error(_error);
 }
